@@ -1,0 +1,55 @@
+*{
+    margin: 0;
+}
+
+.main{
+    width: 600px;
+    margin: 0 auto;
+}
+
+.header{
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.lists{
+    width: 600px;
+    height: 300px;
+    display: flex;
+    margin-bottom: 30px;
+    justify-content: space-between;
+}
+
+.lists .courseList, .lists .selectedList{
+    width: 200px;
+    height: 300px;
+    border: 1px solid #000000;
+    overflow-y: scroll;
+}
+
+.lists .course{
+    border: 1px solid #000000;
+    text-align: center;
+    cursor: pointer;
+}
+
+.lists .course.clicked{
+    background-color: deepskyblue!important;
+}
+
+.lists .course:nth-child(2n){
+    background-color: rgb(221, 239, 221);
+}
+
+.button{
+    margin: 0 auto;
+    width: 150px;
+}
+
+.button .total{
+    float: left;
+}
+
+.button .select-btn{
+    float: right;
+}
