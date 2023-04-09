@@ -4,8 +4,51 @@ class CourseView {
     this.courseInput = document.querySelector("#newCourse");
     this.addBtn = document.querySelector("course__actions--add");
     this.courseList = document.querySelector(".courseList");
+    this.selectedList = document.querySelector(".selectedList");
   }
   
+  select(courses){
+    let selectedCourses = 0
+    courses.forEach((course) => {
+      console.log(this.allCourses(1))
+      selectedCourses += course.credit
+      console.log(selectedCourses)
+    });
+  }
+
+  selectCourse(courses){
+    let selectedCourses = 0
+    document.querySelector(".courseList").addEventListener('click', (e) => {
+      const target = e.target;
+      if(target.classList.contains('clicked')){
+        target.classList.add("unclicked")
+        target.classList.remove("clicked")
+        selectedCourses -= courses[target.id-1].credit
+      } else
+        target.classList.add("clicked")
+      if(target.classList.contains('clicked')){
+        selectedCourses += courses[target.id-1].credit
+        if (selectedCourses > 18){
+          target.classList.remove('clicked')
+          selectedCourses -= courses[target.id-1].credit
+          alert("You are not able to select more than 18 credits!!");
+        }
+      }
+      if(target.classList.contains('unclicked')){
+      }
+      document.getElementById('credits').innerText = selectedCourses
+    })
+
+    document.querySelector("#select").addEventListener('click', (e) => {
+      const chosenCourses = document.getElementsByClassName("clicked")
+      const selectedCourses = document.getElementById("selectedList")
+      selectedCourses.innerHTML = ""
+      for(let i = 0 ; i < chosenCourses.length ; i++){
+        const element = (chosenCourses.item(i))
+        selectedCourses.innerHTML += "<div class='course'>" + element.innerHTML + "</div>"
+      }
+    })
+  }
 
   renderCourses(courses) {
     courses.forEach((course) => {
@@ -23,8 +66,7 @@ class CourseView {
   createCourseElement(course) {
     const courseElem = document.createElement("div");
     courseElem.classList.add("course");
-    courseElem.setAttribute("course-id", course.courseId)
-    courseElem.setAttribute("onclick", 'classList.toggle("clicked")')
+    courseElem.setAttribute("id", course.courseId)
     const courseTitle = document.createElement("p");
     courseTitle.classList.add("courseName");
     courseTitle.innerText = course.courseName;
@@ -47,13 +89,6 @@ class CourseView {
     courseElem.appendChild(courseActions);
 
     return courseElem;
-  }
-
-  
-
-  removeCourseFromView(id){
-    const courseToRemove = document.querySelector(`[course-id="${id}"]`);
-    courseToRemove.remove();
   }
 }
 
@@ -78,7 +113,6 @@ class CourseModel {
   async deleteCourseById(id){
     await API.deleteCourse(id);
   }
-
 }
 
 class CourseConroller {
@@ -91,39 +125,10 @@ class CourseConroller {
   init() {
     this.model.fetchCourses().then(() => {
       const courses = this.model.courses;
+      this.view.selectCourse(courses);
       this.view.renderCourses(courses);
     });
-    this.setUpAddCourse();
-    this.setUpRemoveCourse();
   }
-
-  setUpAddCourse() {
-    if(this.view.allCourses){
-      console.log(this.view.allCourses)
-      this.view.allCourses.addEventListener('click', function (event) {
-        console.log("asds")
-      });
-    }
-    
-    
-  }
-  
-  setUpRemoveCourse(){
-      this.view.courseList.addEventListener('click', (e) => {
-        const target = e.target;
-        if(target.classList.contains('course__actions--delete')){
-          target.setAttribute("disabled","true");
-          const idToRemove = target.getAttribute('remove-id');
-          this.model.deleteCourseById(idToRemove).then(()=>{
-            this.view.removeCourseFromView(idToRemove)
-          }).catch((err)=>{
-            console.log(err);
-            target.removeAttribute("disabled")
-          })
-        }
-      })
-  }
-
 }
 
 const app = new CourseConroller(new CourseModel(), new CourseView());

@@ -33,7 +33,11 @@
     cursor: pointer;
 }
 
-.lists .course.clicked{
+.lists .course p{
+    pointer-events: none;
+}
+
+.lists .courseList .course.clicked{
     background-color: deepskyblue!important;
 }
 
